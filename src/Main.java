@@ -1,61 +1,52 @@
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {  // ИСПРАВЛЕНО: добавили String[] args
-        Shedule shedule = new Shedule();
+    static Shedule shedule = new Shedule();
 
+    public static void main(String[] args) {
         while (true) {
             int command = printMenu();
 
             switch (command) {
-                case 0:  // НОВАЯ КОМАНДА - ВЫХОД
-                    System.out.println("Выход из программы...");
-                    return;  // Выходим из main
-
                 case 1:
                     String addLine = getAdd();
                     String[] addArray = addLine.split(" ");
-                    try{
-                        // Пользователь вводит день 1-7, слот 0-6
-                        shedule.add(Integer.parseInt(addArray[0]),
-                                Integer.parseInt(addArray[1]),
-                                addArray[2]);
-                        System.out.println("Предмет добавлен!");
+                    try {
+                        shedule.add(Integer.parseInt(addArray[0]), Integer.parseInt(addArray[1]), addArray[2]);
                     } catch (Exception e) {
-                        System.out.println("Ошибка: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                     break;
-
                 case 2:
                     String printLine = getPrint();
-                    try{
+                    try {
                         shedule.printDay(Integer.parseInt(printLine));
                     } catch (Exception e) {
-                        System.out.println("Ошибка: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                     break;
-
-                case 3:  // НОВАЯ КОМАНДА - УДАЛЕНИЕ
-                    String deleteLine = getDelete();
-                    String[] deleteArray = deleteLine.split(" ");
-                    if(deleteArray.length < 2) {
-                        System.out.println("Ошибка: нужно ввести день и номер пары!");
-                        break;
-                    }
+                case 3:
+                    String removeLine = getRemove();
+                    String[] removeArray = removeLine.split(" ");
                     try {
-                        int dayNum = Integer.parseInt(deleteArray[0]);
-                        int slotNum = Integer.parseInt(deleteArray[1]);
-                        shedule.remove(dayNum, slotNum);
-                        System.out.println("Предмет удален!");
+                        shedule.remove(Integer.parseInt(removeArray[0]), Integer.parseInt(removeArray[1]));
                     } catch (Exception e) {
-                        System.out.println("Ошибка: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                     break;
-
+                case 4:
+                    shedule.printAll();
+                    break;
+                case 5:
+                    String searchTitle = getSearchTitle();
+                    shedule.findTitle(searchTitle);
+                    break;
+                case 6:
+                    shedule.printStats();
+                    break;
                 default:
                     System.out.println("Неизвестная команда.");
             }
-            System.out.println();  // Пустая строка для читаемости
         }
     }
 
@@ -63,10 +54,12 @@ public class Main {
         Scanner scaner = new Scanner(System.in);
 
         System.out.println("""
-                0) Выход
                 1) Добавить предмет в расписание
                 2) Вывести расписание за день
                 3) Удалить предмет из расписания
+                4) Вывести расписание на всю неделю
+                5) Найти предмет по названию
+                6) Статистика за неделю
                 """);
         System.out.print("Введите команду: ");
 
@@ -75,7 +68,7 @@ public class Main {
 
     public static String getAdd() {
         Scanner scaner = new Scanner(System.in);
-        System.out.print("Введите через пробел: [день(1-7)] [номер пары(0-6)] [предмет]: ");
+        System.out.print("Введите через пробел номер дня недели (1-7), номер пары и предмет: ");
         return scaner.nextLine();
     }
 
@@ -85,10 +78,15 @@ public class Main {
         return scaner.nextLine();
     }
 
-    // НОВЫЙ МЕТОД для удаления
-    public static String getDelete() {
+    public static String getRemove() {
         Scanner scaner = new Scanner(System.in);
-        System.out.print("Введите через пробел: [день(1-7)] [номер пары(0-6)]: ");
+        System.out.print("Введите через пробел номер дня недели (1-7) и номер пары для удаления: ");
+        return scaner.nextLine();
+    }
+
+    public static String getSearchTitle() {
+        Scanner scaner = new Scanner(System.in);
+        System.out.print("Введите название предмета для поиска: ");
         return scaner.nextLine();
     }
 }
